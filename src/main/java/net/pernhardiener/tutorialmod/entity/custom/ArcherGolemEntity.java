@@ -28,10 +28,17 @@ public class ArcherGolemEntity extends HostileEntity implements GeoEntity {
     public int shootCooldown = 80;
 
     private boolean isShooting;
+    private long tickCount;
 
     public ArcherGolemEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
         this.isShooting = false;
+        this.tickCount = 0;
+    }
+
+    public void addTickCount() {
+        this.tickCount += 1;
+        System.out.println("age2 - " + this.tickCount);
     }
 
     public static DefaultAttributeContainer.Builder setAttributes() {
@@ -85,24 +92,26 @@ public class ArcherGolemEntity extends HostileEntity implements GeoEntity {
         return this.isShooting;
     }
 
+    /*private<T extends GeoAnimatable> PlayState shoot(AnimationState<T> tAnimationState) {
+        tAnimationState.getController().setAnimation(RawAnimation.begin().then("animation.archer_golem.shoot", Animation.LoopType.PLAY_ONCE));
+        return PlayState.CONTINUE;
+    }*/
 
     private<T extends GeoAnimatable> PlayState predicate(AnimationState<T> tAnimationState) {
         //String animState = tAnimationState.getController().getAnimationState().toString();
-        System.out.println("age - " + this.getShootCondition() + "");
+        System.out.println("age - " + this.tickCount);
+
         if (this.isShooting) {
 
             System.out.println("age - animation set to 'shoot'");
-
-            tAnimationState.getController().setAnimation(RawAnimation.begin().then("animation.archer_golem.shoot", Animation.LoopType.LOOP));
-            return PlayState.CONTINUE;
-        }
-        if (tAnimationState.isMoving()) {
+            tAnimationState.getController().setAnimation(RawAnimation.begin().then("animation.archer_golem.shoot", Animation.LoopType.PLAY_ONCE));
+        } else if (tAnimationState.isMoving()) {
             tAnimationState.getController().setAnimation(RawAnimation.begin().then("animation.archer_golem.walk", Animation.LoopType.LOOP));
-            return PlayState.CONTINUE;
         } else {
             tAnimationState.getController().setAnimation(RawAnimation.begin().then("animation.archer_golem.idle", Animation.LoopType.LOOP));
-            return PlayState.CONTINUE;
+
         }
+        return PlayState.CONTINUE;
     }
 
     @Override

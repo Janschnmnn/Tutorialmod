@@ -21,6 +21,7 @@ public class CustomRangedAttackGoal<T extends ArcherGolemEntity> extends Goal {
     private int seenTargetTicks;
     private final float maxShootRange;
     private final double mobSpeed;
+    private boolean shoot;
     int cooldown;
     int countdown = 80;
 
@@ -32,6 +33,7 @@ public class CustomRangedAttackGoal<T extends ArcherGolemEntity> extends Goal {
         this.mobSpeed = mobSpeed;
         this.cooldown = cooldown;
         this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
+        this.shoot = false;
     }
 
 
@@ -54,6 +56,7 @@ public class CustomRangedAttackGoal<T extends ArcherGolemEntity> extends Goal {
     }
 
     public void tick() {
+        this.archerGolemEntity.addTickCount();
         double playerDistance = archerGolemEntity.squaredDistanceTo(target);
         boolean bl = this.archerGolemEntity.getVisibilityCache().canSee(this.target);
         if (bl && playerDistance < maxShootRange) {
@@ -65,8 +68,8 @@ public class CustomRangedAttackGoal<T extends ArcherGolemEntity> extends Goal {
             if (countdown <= 0) {
 
                 System.out.println("crag - initiating condition change to 'true'");
-
                 this.archerGolemEntity.setShootCondition(true);
+                this.shoot = true;
                 countdown = this.cooldown;
                 animTime = 20;
             }
@@ -84,9 +87,14 @@ public class CustomRangedAttackGoal<T extends ArcherGolemEntity> extends Goal {
             }
             animTime--;
         } else {
+            this.shoot = false;
             //this.archerGolemEntity.setShootCondition(false);
         }
         countdown--;
+    }
+
+    public boolean getShoot(){
+        return this.shoot;
     }
     
     private void shootArrowAtTarget(LivingEntity target) {
