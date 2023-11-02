@@ -27,10 +27,11 @@ public class ArcherGolemEntity extends HostileEntity implements GeoEntity {
 
     public int shootCooldown = 80;
 
-    private boolean isShooting = false;
+    private boolean isShooting;
 
     public ArcherGolemEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
+        this.isShooting = false;
     }
 
     public static DefaultAttributeContainer.Builder setAttributes() {
@@ -71,7 +72,9 @@ public class ArcherGolemEntity extends HostileEntity implements GeoEntity {
 
             System.out.println("age - isShooting set to: " + value);
 
-            isShooting = value;
+            this.isShooting = value;
+
+            System.out.println("age - is now: " + this.isShooting);
         }
     }
 
@@ -85,15 +88,15 @@ public class ArcherGolemEntity extends HostileEntity implements GeoEntity {
 
     private<T extends GeoAnimatable> PlayState predicate(AnimationState<T> tAnimationState) {
         //String animState = tAnimationState.getController().getAnimationState().toString();
-        //System.out.println(animState);
-
-        if (getShootCondition()) {
+        System.out.println("age - " + this.getShootCondition() + "");
+        if (this.isShooting) {
 
             System.out.println("age - animation set to 'shoot'");
 
-            tAnimationState.setAndContinue(RawAnimation.begin().then("animation.archer_golem.shoot", Animation.LoopType.LOOP));
+            tAnimationState.getController().setAnimation(RawAnimation.begin().then("animation.archer_golem.shoot", Animation.LoopType.LOOP));
             return PlayState.CONTINUE;
-        } else if (tAnimationState.isMoving()) {
+        }
+        if (tAnimationState.isMoving()) {
             tAnimationState.getController().setAnimation(RawAnimation.begin().then("animation.archer_golem.walk", Animation.LoopType.LOOP));
             return PlayState.CONTINUE;
         } else {

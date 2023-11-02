@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 
 public class CustomRangedAttackGoal<T extends ArcherGolemEntity> extends Goal {
-    private final ArcherGolemEntity archerGolemEntity;
+    private ArcherGolemEntity archerGolemEntity;
     @Nullable
     private LivingEntity target;
     private int seenTargetTicks;
@@ -79,12 +79,12 @@ public class CustomRangedAttackGoal<T extends ArcherGolemEntity> extends Goal {
             if (animTime == 10) {
 
                 System.out.println("crag - shooting arrow!");
-
+                System.out.println("crag - " + this.archerGolemEntity.getShootCondition());
                 shootArrowAtTarget(target);
             }
             animTime--;
         } else {
-            this.archerGolemEntity.setShootCondition(false);
+            //this.archerGolemEntity.setShootCondition(false);
         }
         countdown--;
     }
