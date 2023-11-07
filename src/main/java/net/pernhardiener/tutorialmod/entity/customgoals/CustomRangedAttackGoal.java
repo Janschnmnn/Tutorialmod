@@ -72,6 +72,7 @@ public class CustomRangedAttackGoal<T extends ArcherGolemEntity> extends Goal {
                 this.shoot = true;
                 countdown = this.cooldown;
                 animTime = 20;
+                this.archerGolemEntity.triggerAnim("controller", "animation.archer_golem.shoot");
             }
         } else {
             this.archerGolemEntity.getNavigation().stop();
